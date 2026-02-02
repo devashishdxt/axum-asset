@@ -4,12 +4,12 @@ use std::{
 };
 
 use axum::{
-    http::{StatusCode, header::ACCEPT_ENCODING},
+    http::StatusCode,
     response::{IntoResponse, Response},
 };
 use axum_extra::{
     TypedHeader,
-    headers::{CacheControl, ContentType, ETag, IfModifiedSince, IfNoneMatch, LastModified, Vary},
+    headers::{CacheControl, ContentType, ETag, IfModifiedSince, IfNoneMatch, LastModified},
 };
 
 use crate::EmbeddedFile;
@@ -47,7 +47,6 @@ fn not_modified_response(embedded_file: EmbeddedFile) -> Response {
         etag(embedded_file),
         last_modified(embedded_file),
         cache_control(),
-        TypedHeader(Vary::from(ACCEPT_ENCODING)),
     )
         .into_response()
 }
@@ -60,7 +59,6 @@ fn ok_response(embedded_file: EmbeddedFile) -> Response {
         last_modified(embedded_file),
         cache_control(),
         content_type(embedded_file),
-        TypedHeader(Vary::from(ACCEPT_ENCODING)),
         embedded_file.contents,
     )
         .into_response()
