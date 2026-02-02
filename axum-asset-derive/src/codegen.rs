@@ -75,7 +75,7 @@ fn get_file_expr(file: &FileInfo) -> TokenStream {
     let mime_type = &file.mime_type;
 
     let path = &file.relative_path;
-    let route = format!("/{}/{}", content_hash, path);
+    let route = format!("/{}", path);
     let contents = &file.contents;
 
     quote! {
