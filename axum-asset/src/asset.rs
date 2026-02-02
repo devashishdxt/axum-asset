@@ -29,7 +29,29 @@ pub trait Asset {
     }
 }
 
+/// Extension trait for mounting embedded assets onto an Axum router.
+///
+/// This trait provides a convenient way to serve static assets that have been embedded into the binary at compile
+/// time using the [`Asset`] derive macro.
 pub trait WithAsset {
+    /// Mount all assets from an [`Asset`] implementation under the given URL prefix.
+    ///
+    /// Each embedded file is registered as a GET route with proper HTTP caching support, including `ETag`,
+    /// `Last-Modified`, and `Cache-Control` headers. The handler automatically responds with `304 Not Modified` when
+    /// appropriate based on `If-None-Match` and `If-Modified-Since` request headers.
+    ///
+    /// # Example
+    ///
+    /// ```rust,ignore
+    /// use axum::Router;
+    /// use axum_asset::{Asset, WithAsset};
+    ///
+    /// #[derive(Asset)]
+    /// #[asset(dir = "static")]
+    /// struct StaticAssets;
+    ///
+    /// let app = Router::new().with_asset::<StaticAssets>("/static");
+    /// ```
     fn with_asset<A>(self, prefix: &str) -> Self
     where
         A: Asset;
