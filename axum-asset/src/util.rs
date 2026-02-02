@@ -9,7 +9,9 @@ use axum::{
 };
 use axum_extra::{
     TypedHeader,
-    headers::{CacheControl, ContentType, ETag, IfModifiedSince, IfNoneMatch, LastModified},
+    headers::{
+        CacheControl, ContentLength, ContentType, ETag, IfModifiedSince, IfNoneMatch, LastModified,
+    },
 };
 
 use crate::EmbeddedFile;
@@ -40,6 +42,10 @@ fn cache_control() -> TypedHeader<CacheControl> {
     TypedHeader(CacheControl::new().with_no_cache().with_public())
 }
 
+fn content_length(embedded_file: EmbeddedFile) -> TypedHeader<ContentLength> {
+    TypedHeader(ContentLength(embedded_file.metadata.size))
+}
+
 /// Generate a Not-Modified response with appropriate headers.
 fn not_modified_response(embedded_file: EmbeddedFile) -> Response {
     (
@@ -59,6 +65,7 @@ fn ok_response(embedded_file: EmbeddedFile) -> Response {
         last_modified(embedded_file),
         cache_control(),
         content_type(embedded_file),
+        content_length(embedded_file),
         embedded_file.contents,
     )
         .into_response()

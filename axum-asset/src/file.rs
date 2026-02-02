@@ -9,6 +9,9 @@ pub struct EmbeddedFileMetadata {
 
     /// MIME type derived from file extension.
     pub mime_type: &'static str,
+
+    /// Size of the file in bytes.
+    pub size: u64,
 }
 
 /// A file embedded at compile time.

@@ -77,6 +77,7 @@ fn get_file_expr(file: &FileInfo) -> TokenStream {
     let path = &file.relative_path;
     let route = format!("/{}", path);
     let contents = &file.contents;
+    let size = contents.len();
 
     quote! {
         #path => ::core::option::Option::Some(::axum_asset::EmbeddedFile {
@@ -87,6 +88,7 @@ fn get_file_expr(file: &FileInfo) -> TokenStream {
                 content_hash: #content_hash,
                 last_modified: #last_modified,
                 mime_type: #mime_type,
+                size: #size,
             },
         }),
     }
