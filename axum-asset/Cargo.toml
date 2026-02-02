@@ -1,0 +1,9 @@
+[package]
+name = "axum-asset"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+axum.workspace = true
+axum-asset-derive.workspace = true
+axum-extra.workspace = true

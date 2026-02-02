@@ -1,0 +1,15 @@
+[workspace]
+members = ["axum-asset", "axum-asset-derive"]
+resolver = "3"
+
+[workspace.dependencies]
+axum = "0.8.8"
+axum-asset-derive = { version = "0.1.0", path = "./axum-asset-derive" }
+axum-extra = { version = "0.12.5", features = ["typed-header"] }
+hex = "0.4.3"
+mime_guess = "2.0.5"
+proc-macro2 = "1.0.106"
+quote = "1.0.44"
+sha2 = "0.10.9"
+syn = { version = "2.0.114", features = ["extra-traits"] }
+walkdir = "2.5.0"
