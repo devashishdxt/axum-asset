@@ -7,7 +7,7 @@ use crate::{ast::AssetAst, file::FileInfo};
 
 pub fn impl_derive_asset(ast: AssetAst) -> Result<TokenStream, syn::Error> {
     let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap_or_else(|_| ".".to_string());
-    let base_dir = PathBuf::from(&manifest_dir).join(&ast.dir.value());
+    let base_dir = PathBuf::from(&manifest_dir).join(ast.dir.value());
 
     let files = crate::file::collect_files(ast.dir.span(), &base_dir)?;
 
@@ -43,7 +43,7 @@ fn get_expr(files: &[FileInfo]) -> TokenStream {
         };
     }
 
-    let file_exprs: Vec<_> = files.iter().map(|f| get_file_expr(f)).collect();
+    let file_exprs: Vec<_> = files.iter().map(get_file_expr).collect();
 
     quote! {
         match path {

@@ -3,7 +3,6 @@ use syn::{
     spanned::Spanned,
 };
 
-#[derive(Debug)]
 pub struct AssetAst {
     pub dir: LitStr,
     pub ident: Ident,
