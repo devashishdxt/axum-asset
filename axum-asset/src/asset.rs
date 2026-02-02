@@ -1,4 +1,8 @@
-use axum::{Router, routing::get};
+use axum::{
+    Router,
+    http::{HeaderMap, header::IF_NONE_MATCH},
+    routing::get,
+};
 use axum_extra::{
     TypedHeader,
     headers::{IfModifiedSince, IfNoneMatch},
@@ -26,13 +30,13 @@ pub trait Asset {
 }
 
 pub trait WithAsset {
-    fn with_asset<A>(self) -> Self
+    fn with_asset<A>(self, prefix: &str) -> Self
     where
         A: Asset;
 }
 
 impl WithAsset for Router {
-    fn with_asset<A>(self) -> Self
+    fn with_asset<A>(self, prefix: &str) -> Self
     where
         A: Asset,
     {
@@ -40,12 +44,23 @@ impl WithAsset for Router {
 
         for file_name in A::iter() {
             let file = A::get(file_name).unwrap();
+            let route = if prefix.starts_with('/') {
+                format!("{}{}", prefix, file.route)
+            } else {
+                format!("/{}{}", prefix, file.route)
+            };
 
             this = this.route(
-                file.route,
+                &route,
                 get({
-                    move |if_none_match: Option<TypedHeader<IfNoneMatch>>,
-                     if_modified_since: Option<TypedHeader<IfModifiedSince>>| async move {
+                    move |headers: HeaderMap, if_none_match: Option<TypedHeader<IfNoneMatch>>, if_modified_since: Option<TypedHeader<IfModifiedSince>>| async move {
+                        // Workaround for https://github.com/hyperium/headers/issues/204
+                        // IfNoneMatch::decode returns Some even when header is absent
+                        let if_none_match = if headers.contains_key(IF_NONE_MATCH) {
+                            if_none_match
+                        } else {
+                            None
+                        };
                         crate::util::respond(if_none_match, if_modified_since, file)
                     }
                 }),
