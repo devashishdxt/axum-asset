@@ -12,13 +12,13 @@
 //!
 //! # Quick Start
 //!
-//! ```rust,ignore
+//! ```rust,no_run
 //! use axum::Router;
 //! use axum_asset::{Asset, WithAsset};
 //!
 //! // Define a struct and derive Asset, pointing to your static files directory
 //! #[derive(Asset)]
-//! #[asset(dir = "static")]
+//! #[asset(dir = "tests/static")]
 //! struct StaticAssets;
 //!
 //! // Mount the assets on your router
@@ -58,17 +58,16 @@
 //!
 //! You can access embedded files directly:
 //!
-//! ```rust,ignore
+//! ```rust,no_run
 //! use axum_asset::Asset;
 //!
 //! #[derive(Asset)]
-//! #[asset(dir = "static")]
+//! #[asset(dir = "tests/static")]
 //! struct StaticAssets;
 //!
 //! // Get a specific file by its relative path
 //! if let Some(file) = StaticAssets::get("index.html") {
-//!     println!("Route: {}", file.route);
-//!     println!("Content length: {}", file.contents.len());
+//!     println!("Content length: {}", file.metadata.size);
 //!     println!("MIME type: {}", file.metadata.mime_type);
 //!     println!("ETag: {}", file.metadata.content_hash);
 //! }
@@ -95,11 +94,11 @@ mod util;
 ///
 /// # Example
 ///
-/// ```rust,ignore
+/// ```rust,no_run
 /// use axum_asset::Asset;
 ///
 /// #[derive(Asset)]
-/// #[asset(dir = "static")]
+/// #[asset(dir = "tests/static")]
 /// struct StaticAssets;
 ///
 /// // Access files via the generated Asset implementation

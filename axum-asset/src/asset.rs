@@ -42,12 +42,12 @@ pub trait WithAsset {
     ///
     /// # Example
     ///
-    /// ```rust,ignore
+    /// ```rust,no_run
     /// use axum::Router;
     /// use axum_asset::{Asset, WithAsset};
     ///
     /// #[derive(Asset)]
-    /// #[asset(dir = "static")]
+    /// #[asset(dir = "tests/static")]
     /// struct StaticAssets;
     ///
     /// let app = Router::new().with_asset::<StaticAssets>("/static");
