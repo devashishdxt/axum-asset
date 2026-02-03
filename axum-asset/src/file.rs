@@ -17,9 +17,6 @@ pub struct EmbeddedFileMetadata {
 /// A file embedded at compile time.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct EmbeddedFile {
-    /// Route for the file.
-    pub route: &'static str,
-
     /// Path relative to the embedded directory.
     pub path: &'static str,
 

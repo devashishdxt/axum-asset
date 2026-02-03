@@ -67,9 +67,9 @@ impl WithAsset for Router {
         for file_name in A::iter() {
             let file = A::get(file_name).unwrap();
             let route = if prefix.starts_with('/') {
-                format!("{}{}", prefix, file.route)
+                format!("{}/{}", prefix, file.path)
             } else {
-                format!("/{}{}", prefix, file.route)
+                format!("/{}/{}", prefix, file.path)
             };
 
             this = this.route(

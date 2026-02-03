@@ -48,6 +48,9 @@ dependencies = [
  "axum",
  "axum-asset-derive",
  "axum-extra",
+ "http-body-util",
+ "tokio",
+ "tower",
 ]
 
 [[package]]

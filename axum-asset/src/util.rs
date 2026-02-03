@@ -80,18 +80,7 @@ pub fn respond(
     let etag = etag(embedded_file);
 
     match (if_none_match, if_modified_since) {
-        (Some(TypedHeader(if_none_match)), Some(TypedHeader(if_modified_since))) => {
-            if (etag.is_some() && if_none_match.precondition_passes(&etag.unwrap().0))
-                || if_modified_since.is_modified(
-                    UNIX_EPOCH + Duration::from_secs(embedded_file.metadata.last_modified),
-                )
-            {
-                ok_response(embedded_file)
-            } else {
-                not_modified_response(embedded_file)
-            }
-        }
-        (Some(TypedHeader(if_none_match)), None) => {
+        (Some(TypedHeader(if_none_match)), _) => {
             if etag.is_some() && if_none_match.precondition_passes(&etag.unwrap().0) {
                 ok_response(embedded_file)
             } else {
