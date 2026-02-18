@@ -1,6 +1,6 @@
 [package]
 name = "axum-asset"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Devashish Dixit <devashishdxt@gmail.com>"]
 license = "MIT/Apache-2.0"
 description = "A crate for embedding static assets in your Axum application at compile time."
