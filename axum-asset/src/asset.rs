@@ -27,52 +27,39 @@ pub trait Asset {
     fn is_empty() -> bool {
         Self::len() == 0
     }
-}
 
-/// Extension trait for mounting embedded assets onto an Axum router.
-///
-/// This trait provides a convenient way to serve static assets that have been embedded into the binary at compile
-/// time using the [`Asset`] derive macro.
-pub trait WithAsset {
-    /// Mount all assets from an [`Asset`] implementation under the given URL prefix.
+    /// Creates an Axum [`Router`] that serves all embedded files.
     ///
-    /// Each embedded file is registered as a GET route with proper HTTP caching support, including `ETag`,
-    /// `Last-Modified`, and `Cache-Control` headers. The handler automatically responds with `304 Not Modified` when
-    /// appropriate based on `If-None-Match` and `If-Modified-Since` request headers.
+    /// Each embedded file is mounted at its relative path (prefixed with `/`). The router automatically handles HTTP
+    /// caching:
+    ///
+    /// - Sets `ETag`, `Last-Modified`, and `Cache-Control` response headers
+    /// - Handles `If-None-Match` and `If-Modified-Since` conditional requests
+    /// - Returns `304 Not Modified` when the client's cached version is still valid
     ///
     /// # Example
     ///
     /// ```rust,no_run
     /// use axum::Router;
-    /// use axum_asset::{Asset, WithAsset};
+    /// use axum_asset::Asset;
     ///
     /// #[derive(Asset)]
     /// #[asset(dir = "tests/static")]
     /// struct StaticAssets;
     ///
-    /// let app = Router::new().with_asset::<StaticAssets>("/static");
+    /// // Mount assets at /static
+    /// let app = Router::new().nest("/static", StaticAssets::router());
+    ///
+    /// // Files are now accessible at /static/index.html, /static/css/style.css, etc.
     /// ```
-    fn with_asset<A>(self, prefix: &str) -> Self
-    where
-        A: Asset;
-}
+    fn router() -> Router {
+        let mut router = Router::new();
 
-impl WithAsset for Router {
-    fn with_asset<A>(self, prefix: &str) -> Self
-    where
-        A: Asset,
-    {
-        let mut this = self;
+        for file_name in Self::iter() {
+            let file = Self::get(file_name).unwrap();
+            let route = format!("/{}", file.path);
 
-        for file_name in A::iter() {
-            let file = A::get(file_name).unwrap();
-            let route = if prefix.starts_with('/') {
-                format!("{}/{}", prefix, file.path)
-            } else {
-                format!("/{}/{}", prefix, file.path)
-            };
-
-            this = this.route(
+            router = router.route(
                 &route,
                 get({
                     move |headers: HeaderMap, if_none_match: Option<TypedHeader<IfNoneMatch>>, if_modified_since: Option<TypedHeader<IfModifiedSince>>| async move {
@@ -89,6 +76,6 @@ impl WithAsset for Router {
             );
         }
 
-        this
+        router
     }
 }

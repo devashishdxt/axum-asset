@@ -4,12 +4,12 @@ use axum::{
     http::{Request, StatusCode},
     response::Response,
 };
-use axum_asset::{Asset, WithAsset};
+use axum_asset::Asset;
 use http_body_util::BodyExt;
 use tower::ServiceExt;
 
 pub fn router<A: Asset>() -> Router {
-    Router::new().with_asset::<A>("/static")
+    Router::new().nest("/static", A::router())
 }
 
 pub async fn get(app: Router, uri: &str) -> Response {

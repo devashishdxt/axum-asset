@@ -14,7 +14,7 @@
 //!
 //! ```rust,no_run
 //! use axum::Router;
-//! use axum_asset::{Asset, WithAsset};
+//! use axum_asset::Asset;
 //!
 //! // Define a struct and derive Asset, pointing to your static files directory
 //! #[derive(Asset)]
@@ -22,7 +22,7 @@
 //! struct StaticAssets;
 //!
 //! // Mount the assets on your router
-//! let app = Router::new().with_asset::<StaticAssets>("/static");
+//! let app = Router::new().nest("/static", StaticAssets::router());
 //! ```
 //!
 //! With a directory structure like:
@@ -107,6 +107,6 @@ mod util;
 pub use axum_asset_derive::Asset;
 
 pub use self::{
-    asset::{Asset, WithAsset},
+    asset::Asset,
     file::{EmbeddedFile, EmbeddedFileMetadata},
 };
