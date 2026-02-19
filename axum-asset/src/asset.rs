@@ -52,8 +52,11 @@ pub trait Asset {
     ///
     /// // Files are now accessible at /static/index.html, /static/css/style.css, etc.
     /// ```
-    fn router() -> Router {
-        let mut router = Router::new();
+    fn router<T>() -> Router<T>
+    where
+        T: Clone + Send + Sync + 'static,
+    {
+        let mut router = Router::<T>::new();
 
         for file_name in Self::iter() {
             let file = Self::get(file_name).unwrap();
