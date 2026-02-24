@@ -12,7 +12,7 @@ mime_guess = "2.0.5"
 proc-macro2 = "1.0.106"
 quote = "1.0.44"
 sha2 = "0.10.9"
-syn = "2.0.116"
+syn = "2.0.117"
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 tower = { version = "0.5", features = ["util"] }
 walkdir = "2.5.0"
